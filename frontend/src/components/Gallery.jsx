@@ -4,8 +4,11 @@ import { FaX } from "react-icons/fa6";
 import Loader from "./Loader"; // Import Loader
 
 // images
-import ambience1 from "../assets/gallery/ambience1.jpg";
-import ambience2 from "../assets/gallery/ambience2.jpg";
+import newCafe1 from "../assets/cafe-images/hero-exterior.jpg";
+import newCafe2 from "../assets/cafe-images/exterior-glass.jpg";
+import newCafe3 from "../assets/cafe-images/interior.jpg";
+import newCafe4 from "../assets/cafe-images/interior-art.png";
+import newCafe5 from "../assets/cafe-images/night-sign.png";
 import Cake1 from "../assets/gallery/cake1.jpg";
 import Cake2 from "../assets/gallery/cake2.jpg";
 import cake3 from "../assets/gallery/cake3.jpg";
@@ -32,7 +35,7 @@ import food1 from "../assets/gallery/food1.jpg";
 import pastry1 from "../assets/gallery/pastry1.jpg";
 
 const allImages = [
-  ambience1, ambience2, Cake1, Cake2, cake3, cake4, cake5, cake6, cake7,
+  newCafe1, newCafe2, newCafe3, newCafe4, newCafe5, Cake1, Cake2, cake3, cake4, cake5, cake6, cake7,
   cake8, cake9, cake10, cake11, cake12, cake13, cake14, coffee1, customer1,
   customer2, customer3, customer4, customer5, customer6, FishAndChips, food1, pastry1,
 ];

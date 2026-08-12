@@ -1,4 +1,4 @@
-import imgSrc from "../assets/Front1.jpg";
+import imgSrc from "../assets/cafe-images/hero-exterior.jpg";
 import { motion } from "framer-motion";
 
 const HeroSection = () => {

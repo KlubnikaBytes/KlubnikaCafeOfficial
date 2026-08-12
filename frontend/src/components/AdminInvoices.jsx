@@ -41,11 +41,38 @@ const AdminInvoices = () => {
       });
       const orders = await res.json();
 
-      // --- UPDATED EXCEL MAPPING WITH GST BREAKDOWN ---
+      // --- UPDATED EXCEL MAPPING WITH SMART DELIVERY CHARGE CALCULATION ---
       const excelData = orders.map(order => {
-        // Calculate fallbacks for older orders that don't have subTotal/gstAmount fields
-        const subTotalVal = order.subTotal || (order.totalAmount / 1.05);
-        const gstAmountVal = order.gstAmount || (order.totalAmount - subTotalVal);
+        // 1. Get Values (use DB value if exists)
+        let subTotalVal = order.subTotal;
+        let gstAmountVal = order.gstAmount;
+        let totalVal = order.totalAmount;
+        let deliveryChargeVal = order.deliveryCharge;
+
+        // 2. Logic to recover missing data for older orders (Fix for Subtotal)
+        if (subTotalVal === undefined || subTotalVal === null) {
+             const likelyDelivery = (order.orderType === 'Delivery' && totalVal < 500) ? 20 : 0;
+             subTotalVal = (totalVal - likelyDelivery) / 1.05;
+        }
+
+        // 3. GST Fallback
+        if (gstAmountVal === undefined || gstAmountVal === null) {
+             gstAmountVal = subTotalVal * 0.05;
+        }
+
+        // 4. Delivery Charge Recalculation (Fix for missing 20 in DB)
+        // If deliveryCharge is missing (undefined in DB), calculate the gap.
+        if (deliveryChargeVal === undefined || deliveryChargeVal === null) {
+             // Calculate the difference: Total - (Sub + GST)
+             const calculatedGap = totalVal - (subTotalVal + gstAmountVal);
+             
+             // If the gap is roughly 20 (allowing for tiny decimal errors), assume it's Delivery Charge
+             if (Math.abs(calculatedGap - 20) < 1) {
+                 deliveryChargeVal = 20;
+             } else {
+                 deliveryChargeVal = 0;
+             }
+        }
 
         return {
           OrderID: order._id,
@@ -58,9 +85,10 @@ const AdminInvoices = () => {
           Items: order.items?.map(i => `${i.title} (x${i.quantity})`).join(', '),
           
           // Financial Breakdown
-          Subtotal: Number(subTotalVal.toFixed(2)),
-          GST_5_Percent: Number(gstAmountVal.toFixed(2)),
-          Total_Grand: Number(order.totalAmount.toFixed(2)),
+          Subtotal: Number(Number(subTotalVal).toFixed(2)),
+          GST_5_Percent: Number(Number(gstAmountVal).toFixed(2)),
+          Delivery_Charge: Number(Number(deliveryChargeVal).toFixed(2)), // NOW CALCULATED CORRECTLY
+          Total_Grand: Number(Number(totalVal).toFixed(2)),
           
           Status: order.status,
           PaymentMethod: order.paymentMethod
@@ -69,7 +97,7 @@ const AdminInvoices = () => {
 
       const worksheet = XLSX.utils.json_to_sheet(excelData);
       
-      // Setting column widths for better readability in Excel
+      // Setting column widths
       const wscols = [
         { wch: 25 }, // OrderID
         { wch: 12 }, // Date
@@ -79,6 +107,7 @@ const AdminInvoices = () => {
         { wch: 40 }, // Items
         { wch: 10 }, // Subtotal
         { wch: 15 }, // GST
+        { wch: 15 }, // Delivery Charge
         { wch: 15 }, // Total
         { wch: 15 }, // Status
         { wch: 20 }, // PaymentMethod

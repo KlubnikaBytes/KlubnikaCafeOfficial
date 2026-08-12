@@ -19,8 +19,8 @@ const containerVariants = {
 };
 
 // --- Real Google Maps URLs for Kolkata ---
-const mapUrl = "https://maps.app.goo.gl/EtyGWearDae4XRPv6"; 
-const embedSrc = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d942042.0068812185!2d86.30241394042969!3d22.73375696418645!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39f7f95fd20e4a93%3A0x6086390c9ce0dc00!2sKlubnika!5e0!3m2!1sen!2sin!4v1763013741261!5m2!1sen!2sin"; 
+const mapUrl = "https://maps.google.com/?q=C-218,+Survey+Park,+Santoshpur,+Kolkata,+West+Bengal+700075"; 
+const embedSrc = "https://maps.google.com/maps?q=C-218,%20Survey%20Park,%20Santoshpur,%20Kolkata,%20West%20Bengal%20700075&t=&z=15&ie=UTF8&iwloc=&output=embed"; 
 
 const Contact = () => {
   const [loading, setLoading] = useState(true);

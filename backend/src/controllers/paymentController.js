@@ -1,3 +1,5 @@
+// backend/src/controllers/paymentController.js
+
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
 const Product = require("../models/Product.js");
@@ -14,7 +16,6 @@ const instance = new Razorpay({
 
 // --- HELPER FUNCTIONS ---
 
-// Helper: Normalize titles
 const getCleanItemTitle = (title) => {
   if (title && title.startsWith("Extra Cheese (")) {
     return "Extra Cheese";
@@ -22,7 +23,6 @@ const getCleanItemTitle = (title) => {
   return title;
 };
 
-// Helper: Parse price
 const parsePrice = (priceStr) => {
   if (typeof priceStr === "number") return priceStr;
   if (!priceStr) return 0;
@@ -31,9 +31,11 @@ const parsePrice = (priceStr) => {
 
 // --- CONTROLLERS ---
 
-// @desc    1. Create Razorpay Order ID (Includes 5% GST)
+// @desc    1. Create Razorpay Order ID (Includes 5% GST + Delivery)
 exports.createOrder = async (req, res) => {
   try {
+    const { orderType } = req.body; // Expecting 'Delivery' or 'Dine-in'
+
     const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ error: "User not found" });
 
@@ -60,14 +62,21 @@ exports.createOrder = async (req, res) => {
       return res.status(400).json({ error: `Items sold out: ${unavailableItems.join(", ")}` });
     }
 
-    // --- GST CALCULATION ---
+    // --- FINANCIAL CALCULATIONS ---
     const subTotal = cartItems.reduce((acc, item) => {
       const priceValue = parsePrice(item.price);
       return acc + priceValue * item.quantity;
     }, 0);
 
     const gstAmount = Math.round(subTotal * 0.05 * 100) / 100; // 5% GST
-    const totalWithGst = subTotal + gstAmount;
+    
+    // Delivery Logic: If Delivery & Subtotal < 500 => 20. Else 0.
+    let deliveryCharge = 0;
+    if (orderType === 'Delivery' && subTotal < 500) {
+        deliveryCharge = 20;
+    }
+
+    const totalWithGst = subTotal + gstAmount + deliveryCharge;
 
     if (isNaN(totalWithGst) || totalWithGst <= 0) {
       return res.status(400).json({ error: "Invalid total amount calculated." });
@@ -97,8 +106,8 @@ exports.verifyPayment = async (req, res) => {
     razorpay_signature,
     deliveryAddress,
     deliveryCoords,
-    orderType,   // Optional: 'Delivery' or 'Dine-in'
-    tableNumber  // Optional: If Dine-in
+    orderType,   // 'Delivery' or 'Dine-in'
+    tableNumber  // Optional
   } = req.body;
 
   const secret = process.env.RAZORPAY_KEY_SECRET;
@@ -114,13 +123,12 @@ exports.verifyPayment = async (req, res) => {
   }
 
   try {
-    // 2. Fetch Payment Details from Razorpay
+    // 2. Fetch Payment Details
     const paymentDetails = await instance.payments.fetch(razorpay_payment_id);
     if (paymentDetails.status !== "captured") {
       return res.status(400).json({ success: false, message: "Payment not captured" });
     }
 
-    // Determine Method string
     let payMethod = paymentDetails.method;
     if (payMethod === "wallet") payMethod = `Wallet (${paymentDetails.wallet})`;
     if (payMethod === "emi") payMethod = "Pay Later / EMI";
@@ -131,16 +139,27 @@ exports.verifyPayment = async (req, res) => {
     const validCartItems = user.cart;
     const amountPaid = paymentDetails.amount / 100;
 
-    // --- REVERSE CALCULATE GST FOR STORAGE ---
-    const subTotal = Math.round((amountPaid / 1.05) * 100) / 100;
-    const gstAmount = Math.round((amountPaid - subTotal) * 100) / 100;
+    // --- RE-CALCULATE BREAKDOWN FOR STORAGE ---
+    const subTotal = validCartItems.reduce((acc, item) => {
+        const priceValue = parsePrice(item.price);
+        return acc + priceValue * item.quantity;
+    }, 0);
 
-    // 3. Create Order in DB
+    const gstAmount = Math.round(subTotal * 0.05 * 100) / 100;
+    
+    // Determine Delivery Charge based on rules
+    let deliveryCharge = 0;
+    if (orderType === 'Delivery' && subTotal < 500) {
+        deliveryCharge = 20;
+    }
+
+    // 3. Create Order
     const newOrder = new Order({
       user: user._id,
       items: validCartItems,
       subTotal: subTotal,
       gstAmount: gstAmount,
+      deliveryCharge: deliveryCharge, // SAVE THIS
       totalAmount: amountPaid,
       status: "Pending",
       
@@ -184,15 +203,15 @@ exports.verifyPayment = async (req, res) => {
           (err) => console.error("Background SMS Failed:", err.message)
         );
 
-        // 3. Email Logic (with Breakdown)
+        // 3. Email Logic
         const emailSubject = `Total Amount Paid #${shortOrderId}`;
         const itemsHtml = validCartItems
           .map(
             (item) => `
           <tr>
-            <td style="padding: 15px 0; border-bottom: 1px solid #e5e7eb; color: #374151;">${item.title}</td>
-            <td style="padding: 15px 0; border-bottom: 1px solid #e5e7eb; text-align: center; color: #6b7280;">${item.quantity}</td>
-            <td style="padding: 15px 0; border-bottom: 1px solid #e5e7eb; text-align: right; color: #374151; font-weight: 600;">₹${item.price}</td>
+            <td style="padding: 10px; border-bottom: 1px solid #eee;">${item.title}</td>
+            <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: center;">${item.quantity}</td>
+            <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">₹${item.price}</td>
           </tr>`
           )
           .join("");
@@ -228,8 +247,16 @@ exports.verifyPayment = async (req, res) => {
                 <div style="border-top: 2px solid #e5e7eb; padding-top: 15px; text-align: right;">
                   <p style="margin: 0; color: #6b7280;">Subtotal: ₹${subTotal}</p>
                   <p style="margin: 5px 0; color: #6b7280;">GST (5%): ₹${gstAmount}</p>
-                  <span style="font-weight: 700; color: #374151; margin-right: 20px;">Total Amount Paid</span>
-                  <span style="font-weight: 800; font-size: 24px; color: #f43f5e;">₹${amountPaid}</span>
+                  
+                  <p style="margin: 5px 0; color: ${deliveryCharge > 0 ? '#374151' : 'green'}; font-weight: ${deliveryCharge === 0 ? 'bold' : 'normal'};">
+                    Delivery: ${deliveryCharge > 0 ? '₹' + deliveryCharge : 'FREE'}
+                  </p>
+
+                  <h2 style="color: #f43f5e; margin-bottom: 10px;">Total: ₹${amountPaid}</h2>
+                  
+                  <p style="font-size: 11px; color: #ef4444; margin-top: 15px; font-style: italic;">
+                     * Note: Delivery charge may change based on the distance.
+                  </p>
                 </div>
               </div>
             </div>
@@ -280,14 +307,21 @@ exports.createCashOrder = async (req, res) => {
       return res.status(400).json({ error: "Your cart is empty." });
     }
 
-    // --- GST CALCULATION ---
+    // --- FINANCIAL CALCULATIONS ---
     const subTotal = cartItems.reduce((acc, item) => {
       const priceValue = parsePrice(item.price);
       return acc + priceValue * item.quantity;
     }, 0);
 
     const gstAmount = Math.round(subTotal * 0.05 * 100) / 100;
-    const totalWithGst = subTotal + gstAmount;
+    
+    // Delivery Logic
+    let deliveryCharge = 0;
+    if (orderType === 'Delivery' && subTotal < 500) {
+        deliveryCharge = 20;
+    }
+
+    const totalWithGst = subTotal + gstAmount + deliveryCharge;
 
     let paymentMethodString = "Cash";
     if (orderType === 'Dine-in') {
@@ -302,6 +336,7 @@ exports.createCashOrder = async (req, res) => {
       items: cartItems,
       subTotal: subTotal,
       gstAmount: gstAmount,
+      deliveryCharge: deliveryCharge, // SAVE THIS
       totalAmount: totalWithGst,
       status: "Pending",
       paymentMethod: paymentMethodString,
@@ -334,9 +369,9 @@ exports.createCashOrder = async (req, res) => {
             .map(
               (item) => `
             <tr>
-              <td style="padding: 15px 0; border-bottom: 1px solid #e5e7eb; color: #374151;">${item.title}</td>
-              <td style="padding: 15px 0; border-bottom: 1px solid #e5e7eb; text-align: center; color: #6b7280;">${item.quantity}</td>
-              <td style="padding: 15px 0; border-bottom: 1px solid #e5e7eb; text-align: right; color: #374151; font-weight: 600;">₹${item.price}</td>
+              <td style="padding: 10px; border-bottom: 1px solid #e5e7eb; color: #374151;">${item.title}</td>
+              <td style="padding: 10px; border-bottom: 1px solid #e5e7eb; text-align: center;">${item.quantity}</td>
+              <td style="padding: 10px; border-bottom: 1px solid #e5e7eb; text-align: right;">₹${item.price}</td>
             </tr>`
             )
             .join("");
@@ -372,8 +407,15 @@ exports.createCashOrder = async (req, res) => {
                   <div style="border-top: 2px solid #e5e7eb; padding-top: 15px; text-align: right;">
                     <p style="margin: 0; color: #6b7280;">Subtotal: ₹${subTotal}</p>
                     <p style="margin: 5px 0; color: #6b7280;">GST (5%): ₹${gstAmount}</p>
-                    <span style="font-weight: 700; color: #374151; margin-right: 20px;">Total Amount</span>
-                    <span style="font-weight: 800; font-size: 24px; color: #f43f5e;">₹${totalWithGst}</span>
+                    <p style="margin: 5px 0; color: ${deliveryCharge > 0 ? '#374151' : 'green'}; font-weight: ${deliveryCharge === 0 ? 'bold' : 'normal'};">
+                      Delivery: ${deliveryCharge > 0 ? '₹' + deliveryCharge : 'FREE'}
+                    </p>
+                    
+                    <h2 style="color: #f43f5e; margin-bottom: 10px;">Total: ₹${totalWithGst}</h2>
+
+                    <p style="font-size: 11px; color: #ef4444; margin-top: 15px; font-style: italic;">
+                       * Note: Delivery charge may change based on the distance.
+                    </p>
                   </div>
                 </div>
               </div>

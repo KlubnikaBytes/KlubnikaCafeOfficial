@@ -18,7 +18,7 @@ const ShippingDeliveryPage = () => {
         <section>
           <h3 className="text-xl font-semibold mb-2 text-rose-400">Delivery Area and Times</h3>
           <p>
-            We currently deliver to <strong>Govindapur, Chandrakona</strong>, and surrounding areas within a <strong>5km radius</strong> of the restaurant. Delivery service is available from <strong>10:00 AM to 10:00 PM</strong> daily.
+            We currently deliver to <strong>Santoshpur, Kolkata</strong>, and surrounding areas within a <strong>5km radius</strong> of the restaurant. Delivery service is available from <strong>10:00 AM to 10:00 PM</strong> daily.
           </p>
         </section>
 

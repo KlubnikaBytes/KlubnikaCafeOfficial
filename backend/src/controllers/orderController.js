@@ -1,3 +1,5 @@
+// backend/src/controllers/orderController.js
+
 const Order = require("../models/Order.js");
 const PDFDocument = require("pdfkit");
 const Razorpay = require("razorpay");
@@ -13,7 +15,7 @@ const instance = new Razorpay({
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
-// Helper: generate invoice PDF into a Buffer
+// ✅ UPDATED PDF GENERATOR (Now includes Delivery Charge Row & Note)
 const generateInvoicePdfBuffer = (order) =>
   new Promise((resolve, reject) => {
     try {
@@ -32,7 +34,7 @@ const generateInvoicePdfBuffer = (order) =>
       doc.moveDown();
 
       doc.fontSize(10).text("Klubnika Restaurant", { align: "right" });
-      doc.text("123 Food Street, Kolkata", { align: "right" });
+      doc.text("C-218, Survey Park, Santoshpur, Kolkata, West Bengal 700075", { align: "right" });
       doc.moveDown();
 
       doc.fontSize(12).text(`Order ID: ${order._id}`);
@@ -71,24 +73,37 @@ const generateInvoicePdfBuffer = (order) =>
       y += 30;
       doc.fontSize(11).font("Helvetica");
       
-      // Subtotal
+      // 1. Subtotal
       doc.text("Subtotal:", 350, y);
       doc.text(`Rs. ${order.subTotal || (order.totalAmount / 1.05).toFixed(2)}`, 400, y, { align: "right" });
       
-      // GST
+      // 2. GST
       y += 20;
       doc.text("GST (5%):", 350, y);
       doc.text(`Rs. ${order.gstAmount || (order.totalAmount - (order.totalAmount / 1.05)).toFixed(2)}`, 400, y, { align: "right" });
 
-      // Grand Total
+      // 3. ✅ DELIVERY CHARGE ROW (Fixed)
+      y += 20;
+      doc.text("Delivery Charge:", 350, y);
+      const delCharge = order.deliveryCharge || 0;
+      const delText = delCharge === 0 ? "FREE" : `Rs. ${delCharge}`;
+      doc.text(delText, 400, y, { align: "right" });
+
+      // 4. Grand Total
       y += 25;
       doc.fontSize(14).font("Helvetica-Bold");
       doc.text("Grand Total:", 300, y);
       doc.text(`Rs. ${order.totalAmount}`, 400, y, { align: "right" });
 
-      // Footer
+      // ✅ DISCLAIMER NOTE AT BOTTOM
+      doc.moveDown(2);
+      doc.fontSize(9).fillColor('red').font("Helvetica-Oblique");
+      doc.text("* Note: Delivery charge may change based on the distance.", 50, doc.y + 20, { align: "center" });
+      
+      doc.fillColor('black'); // Reset color
+      doc.moveDown(1);
       doc.fontSize(10).font("Helvetica");
-      doc.text("Thank you for dining with us!", 50, 700, { align: "center" });
+      doc.text("Thank you for dining with us!", 50, doc.y, { align: "center" });
 
       doc.end();
     } catch (err) {

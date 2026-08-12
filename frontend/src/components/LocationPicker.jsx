@@ -10,12 +10,11 @@ import haversine from "haversine";
 const LIBRARIES = ["places"];
 
 const CAFE_LOCATION = {
-  lat: 22.7339544,
-  lng: 87.5219511,
+  lat: 22.4930,
+  lng: 88.3936,
 };
 
-const MAX_DISTANCE_KM = 10;
-
+const MAX_DISTANCE_KM = 150;
 // Dark Theme Style
 const MAP_STYLE = [
   { elementType: "geometry", stylers: [{ color: "#242f3e" }] },

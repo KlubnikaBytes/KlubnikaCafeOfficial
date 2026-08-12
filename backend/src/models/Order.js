@@ -15,7 +15,7 @@ const orderSchema = new mongoose.Schema({
   },
   items: [cartItemSchema],
   
-  // --- TAX & TOTAL FIELDS ---
+  // --- FINANCIAL FIELDS ---
   subTotal: { 
     type: Number, 
     required: true,
@@ -25,11 +25,18 @@ const orderSchema = new mongoose.Schema({
     type: Number, 
     required: true, 
     default: 0 
-  }, // Calculated as 5% of subTotal
+  }, 
+  
+  // ✅ FIELD REQUIRED TO STORE THE DATA
+  deliveryCharge: { 
+    type: Number, 
+    default: 0 
+  }, 
+
   totalAmount: { 
     type: Number, 
     required: true,
-  }, // The final amount (subTotal + gstAmount)
+  }, 
 
   status: {
     type: String,
@@ -38,42 +45,23 @@ const orderSchema = new mongoose.Schema({
     default: 'Pending',
   },
   
-  // --- Order Type (Delivery vs Dine-in) ---
   orderType: {
     type: String,
     enum: ['Delivery', 'Dine-in'],
     default: 'Delivery'
   },
   
-  // --- Table Number (Only for Dine-in) ---
-  tableNumber: {
-    type: String,
-    required: false,
-  },
+  tableNumber: { type: String, required: false },
 
-  // --- Delivery Fields (Optional for Dine-in) ---
-  deliveryAddress: {
-    type: String,
-    required: false, 
-  },
+  deliveryAddress: { type: String, required: false },
   deliveryCoords: {
     lat: { type: Number, required: false },
     lng: { type: Number, required: false },
   },
 
-  // --- Payment Fields (Optional for Cash/Pay at Counter) ---
-  paymentId: {
-    type: String,
-    required: false, 
-  },
-  razorpayOrderId: {
-    type: String,
-    required: false, 
-  },
-  paymentMethod: {
-    type: String,
-    default: 'Online',
-  }
+  paymentId: { type: String, required: false },
+  razorpayOrderId: { type: String, required: false },
+  paymentMethod: { type: String, default: 'Online' }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Order', orderSchema);
