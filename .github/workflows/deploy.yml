@@ -23,7 +23,8 @@ jobs:
             # 1. Go to the project root directory
             cd /root/KlubnikaCafe
 
-            # 2. Pull the latest code from GitHub
+            # 2. Pull the latest code from GitHub (discard any local changes on the server first)
+            git reset --hard HEAD
             git pull origin main
 
             # 3. Setup Backend
