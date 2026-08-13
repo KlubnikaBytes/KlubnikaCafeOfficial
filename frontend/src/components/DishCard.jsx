@@ -5,8 +5,14 @@ import { useNavigate, useLocation } from "react-router-dom"; // Import hooks
 import { PIZZA_ADD_ON } from "../constants"; 
 import AddOnModal from "./AddOnModal"; 
 
+// ─────────────────────────────────────────────────────────────────
+// 🔒 ONLINE ORDERING FLAG — set to true to re-enable online orders
+const ONLINE_ORDERING_ENABLED = false;
+// ─────────────────────────────────────────────────────────────────
+
 const DishCard = ({ dish }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showComingSoon, setShowComingSoon] = useState(false);
   const { addToCart } = useCart();
   const { user } = useAuth(); // Get user status
   const navigate = useNavigate();
@@ -27,6 +33,12 @@ const DishCard = ({ dish }) => {
 
   // --- LOGIC: Check for Pizza ---
   const handleOrderClick = () => {
+    // 🔒 Online ordering disabled — show coming soon popup
+    if (!ONLINE_ORDERING_ENABLED) {
+      setShowComingSoon(true);
+      return;
+    }
+
     if (!checkLoginAndRedirect()) return; // Stop if not logged in
 
     // Check category or title
@@ -121,6 +133,33 @@ const DishCard = ({ dish }) => {
           </button>
         </div>
       </div>
+
+      {/* ── Coming Soon Modal (shown when ONLINE_ORDERING_ENABLED = false) ── */}
+      {showComingSoon && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center"
+          style={{ backgroundColor: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}
+          onClick={() => setShowComingSoon(false)}
+        >
+          <div
+            className="relative bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full mx-4 text-center"
+            onClick={e => e.stopPropagation()}
+          >
+            <div style={{ fontSize: '3rem' }}>🚫</div>
+            <h2 className="text-2xl font-bold text-gray-800 mt-3">Online Ordering Disabled</h2>
+            <p className="text-gray-500 mt-2 text-sm leading-relaxed">
+              Online ordering is currently unavailable.<br />
+              We'll be back soon — stay tuned! 🍓
+            </p>
+            <button
+              onClick={() => setShowComingSoon(false)}
+              className="mt-6 px-6 py-2 bg-primary text-white rounded-full font-semibold hover:bg-rose-600 transition-all"
+            >
+              Got it!
+            </button>
+          </div>
+        </div>
+      )}
 
       <AddOnModal
         isOpen={isModalOpen}
