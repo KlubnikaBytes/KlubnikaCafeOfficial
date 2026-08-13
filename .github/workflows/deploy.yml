@@ -1,0 +1,43 @@
+name: Deploy Klubnika Cafe to Hostinger
+
+on:
+  push:
+    branches:
+      - main # Change this if your main branch is named 'master'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Execute Remote SSH Commands
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            # 1. Go to the project root directory
+            cd /root/KlubnikaCafe
+
+            # 2. Pull the latest code from GitHub
+            git pull origin main
+
+            # 3. Setup Backend
+            cd backend
+            npm install
+            npm run seed 
+            
+            # Restart the backend using the exact PM2 name you confirmed
+            pm2 restart klubnika-cafe-backend
+            
+            # 4. Setup Frontend
+            cd ../frontend
+            npm install
+            npm run build
+            
+            # Save the PM2 list so it auto-restarts on server reboots
+            pm2 save
