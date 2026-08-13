@@ -1,53 +1,121 @@
 import imgSrc from "../assets/cafe-images/hero-exterior.jpg";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const HeroSection = () => {
   return (
     <section
       id="hero"
-      className="relative flex items-center justify-center overflow-hidden"
+      className="relative overflow-hidden"
       style={{ height: '100svh' }}
     >
-      {/* Background Image Layer */}
+      {/* Full Viewport Background Image */}
       <div className="absolute inset-0 z-0">
         <img
           src={imgSrc}
-          // ADDED 'scale-110' to zoom the image in slightly
-          className="w-full h-full object-cover object-center scale-110"
-          alt="Background"
+          className="w-full h-full object-cover"
+          style={{ objectPosition: 'center 38%' }}
+          alt="Klubnika Cafe"
         />
       </div>
 
-      {/* Gradient Overlay Layer */}
-      <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/10 via-black/30 to-black/80"></div>
+      {/* Cinematic Vignette — radial dark edges */}
+      <div className="absolute inset-0 z-10" style={{
+        background: 'radial-gradient(ellipse at 50% 40%, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.65) 100%)'
+      }} />
 
-      {/* Text Content Layer */}
-      <div className="relative z-20 flex flex-col items-center justify-center text-center px-4">
+      {/* Top & bottom gradient — blends navbar + grounds the text */}
+      <div className="absolute inset-0 z-10" style={{
+        background: 'linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, transparent 25%, transparent 55%, rgba(0,0,0,0.9) 100%)'
+      }} />
+
+      {/* Centered Content */}
+      <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4">
+
+        {/* Decorative top line */}
+        <motion.div
+          initial={{ scaleX: 0, opacity: 0 }}
+          animate={{ scaleX: 1, opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          style={{
+            height: '1px',
+            width: '50px',
+            background: 'rgba(255,220,150,0.7)',
+            marginBottom: '20px',
+          }}
+        />
+
+        {/* Main Title */}
         <motion.h1
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 35 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-white tracking-wider"
+          transition={{ duration: 1, delay: 0.35 }}
           style={{
             fontFamily: "'Great Vibes', cursive",
             fontWeight: 400,
-            fontSize: "clamp(2.8rem, 8vw, 6.5rem)",
+            fontSize: 'clamp(3.5rem, 11vw, 8.5rem)',
+            color: '#fff',
+            lineHeight: 1.1,
+            textShadow: '0 4px 40px rgba(0,0,0,0.9), 0 0 80px rgba(210,160,60,0.25)',
+            letterSpacing: '0.02em',
           }}
         >
           Klubnika Café
         </motion.h1>
 
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
+        {/* Subtitle with flanking lines */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.7 }}
-          className="text-white uppercase opacity-90 tracking-[0.25em]"
+          transition={{ duration: 0.8, delay: 0.65 }}
           style={{
-            fontSize: "clamp(0.9rem, 3vw, 1.8rem)",
+            display: 'flex',
+            alignItems: 'center',
+            gap: '14px',
+            marginTop: '16px',
           }}
         >
-          India
-        </motion.p>
+          <span style={{ height: '1px', width: '36px', background: 'rgba(255,220,150,0.55)', display: 'block' }} />
+          <span style={{
+            color: 'rgba(255,255,255,0.82)',
+            fontSize: 'clamp(0.6rem, 1.4vw, 0.85rem)',
+            letterSpacing: '0.5em',
+            fontWeight: 300,
+          }}>
+            INDIA
+          </span>
+          <span style={{ height: '1px', width: '36px', background: 'rgba(255,220,150,0.55)', display: 'block' }} />
+        </motion.div>
+
+        {/* Explore button */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.95 }}
+          style={{ marginTop: '36px' }}
+        >
+          <Link
+            to="/dishes"
+            style={{
+              border: '1px solid rgba(255,220,150,0.5)',
+              color: 'rgba(255,255,255,0.9)',
+              padding: '10px 32px',
+              fontSize: 'clamp(0.6rem, 1.3vw, 0.78rem)',
+              letterSpacing: '0.35em',
+              fontWeight: 400,
+              textDecoration: 'none',
+              borderRadius: '2px',
+              backdropFilter: 'blur(4px)',
+              background: 'rgba(255,255,255,0.04)',
+              display: 'inline-block',
+              transition: 'all 0.3s ease',
+            }}
+            onMouseEnter={e => e.target.style.backgroundColor = 'rgba(210,160,60,0.2)'}
+            onMouseLeave={e => e.target.style.backgroundColor = 'rgba(255,255,255,0.04)'}
+          >
+            EXPLORE MENU
+          </Link>
+        </motion.div>
       </div>
     </section>
   );

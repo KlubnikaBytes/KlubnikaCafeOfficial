@@ -145,7 +145,7 @@ import cappuccinoCCDCookies from "../assets/Menu/Combos/Cappuccino + CCD Cookies
 import chickenPizzaMintMojito from "../assets/Menu/Combos/Chicken Pizza + Mint Mojito.png";
 
 // --- Import Icons ---
-import { FaXTwitter, FaFacebook, FaInstagram } from "react-icons/fa6";
+import { FaFacebook, FaInstagram } from "react-icons/fa6";
 
 // --- Image Utility ---
 // Helper array to rotate through the 10 dish images (for fallbacks)
@@ -1011,15 +1011,11 @@ export const CONTACT = [
 
 export const SOCIAL_MEDIA_LINKS = [
   {
-    href: "https://www.facebook.com/p/Klubnika-100084613304626/",
+    href: "https://www.facebook.com/profile.php?id=61593284964167",
     icon: <FaFacebook fontSize={30} className="hover:opacity-80" />,
   },
   {
-    href: "https://www.instagram.com/klubnika_ckt?fbclid=IwY2xjawOKWqxleHRuA2FlbQIxMABicmlkETF4SlcxY0dWdkpGWFR0bUtzc3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHthlemRwMfyWBCLODhun1PW8uoU-rIAC8tSP_5g5USrqmqc0rxYlzLg9UaJd_aem_W_elyW5Up8OKo_Y9DRrmyA",
+    href: "https://www.instagram.com/klubnika_cafe_official/",
     icon: <FaInstagram fontSize={30} className="hover:opacity-80" />,
-  },
-  {
-    href: "https://x.com/",
-    icon: <FaXTwitter fontSize={30} className="hover:opacity-80" />,
   },
 ];
