@@ -3,15 +3,11 @@
 const jwt = require('jsonwebtoken');
 const Order = require('../models/Order');
 
-// Sample hardcoded admin credentials
-const ADMIN_USERNAME = 'klubnika_cafeadmin';
-const ADMIN_PASSWORD = 'OverCoffee@757';
-
 // --- 1. Admin Login ---
 exports.adminLogin = async (req, res) => {
   const { username, password } = req.body;
   try {
-    if (username !== ADMIN_USERNAME || password !== ADMIN_PASSWORD) {
+    if (username !== process.env.ADMIN_USERNAME || password !== process.env.ADMIN_PASSWORD) {
       return res.status(401).json({ error: 'Invalid admin credentials' });
     }
 
