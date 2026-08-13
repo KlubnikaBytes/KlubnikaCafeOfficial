@@ -3,7 +3,7 @@ name: Deploy Klubnika Cafe to Hostinger
 on:
   push:
     branches:
-      - main # Change this if your main branch is named 'master'
+      - main # Change to 'master' if your main branch uses master
 
 jobs:
   deploy:
@@ -20,25 +20,24 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            # 1. Go to the project root directory
+            # Navigate to project directory
             cd /root/KlubnikaCafe
 
-            # 2. Pull the latest code from GitHub (discard any local changes on the server first)
-            git reset --hard HEAD
-            git pull origin main
+            # Hard reset local server changes to prevent merge conflicts
+            git fetch origin main
+            git reset --hard origin/main
 
-            # 3. Setup Backend
-            cd backend
-            npm install
-            npm run seed 
+            # --- Backend Setup ---
+            cd /root/KlubnikaCafe/backend
+            npm install --production
             
-            # Restart the backend using the exact PM2 name you confirmed
-            pm2 restart klubnika-cafe-backend
-            
-            # 4. Setup Frontend
-            cd ../frontend
+            # Restart PM2 process by pattern match or restart all
+            pm2 restart klubnika-cafe-backend || pm2 restart klubnika-cafe-bac || pm2 start index.js --name "klubnika-cafe-backend"
+
+            # --- Frontend Setup ---
+            cd /root/KlubnikaCafe/frontend
             npm install
             npm run build
-            
-            # Save the PM2 list so it auto-restarts on server reboots
+
+            # Save PM2 state
             pm2 save
