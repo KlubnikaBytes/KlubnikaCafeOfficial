@@ -70,13 +70,7 @@ import kiwiSmoothie from "../assets/Menu/Cheer Up/kiwi smoothie.jpg";
 import peachSmoothie from "../assets/Menu/Cheer Up/peach smoothie.jpg";
 import mangoSmoothie from "../assets/Menu/Cheer Up/mango smoothie.jpg";
 
-// Momo & Pasta
-import paneerChilliMomo from "../assets/Menu/Momo & Pasta/Paneer Chilli Momo(5pcs).jpg";
-import friedPaneerChilliMomo from "../assets/Menu/Momo & Pasta/Fried Paneer Chilli Momo(5pcs).jpg";
-import schezwanPaneerMomo from "../assets/Menu/Momo & Pasta/Schezwan Pan Fried Paneer Chilli Momo.jpg";
-import steamChickenMomo from "../assets/Menu/Momo & Pasta/Steam Chicken Momo(5pcs).jpg";
-import friedChickenMomo from "../assets/Menu/Momo & Pasta/Fried Chicken Momo(5pcs).jpg";
-import schezwanChickenMomo from "../assets/Menu/Momo & Pasta/Schezwan Pan Fried Chicken Momo.jpg";
+// Pasta
 import whiteSaucePastaVeg from "../assets/Menu/Momo & Pasta/White Sauce Pasta Veg.jpg";
 import redSaucePastaVeg from "../assets/Menu/Momo & Pasta/Red Sauce Pasta Veg.jpg";
 import whiteSaucePastaNonVeg from "../assets/Menu/Momo & Pasta/White Sauce Pasta Non-Veg.jpg";
@@ -133,12 +127,10 @@ import brownie from "../assets/Menu/Desserts/Brownie.jpg";
 import brownieWithIceCream from "../assets/Menu/Desserts/Brownie with ice cream.jpg";
 import sizzlingBrownie from "../assets/Menu/Desserts/Sizzling brownie.jpg";
 import gulabJamunWithIceCream from "../assets/Menu/Desserts/Gulab Jamun with ice cream.jpg";
-import freshFruitPunch from "../assets/Menu/Desserts/Fresh Fruit Punch.jpg";
 
 //Combos
 import cappuccinoSandwichBrownie from "../assets/Menu/Combos/Cappuccino + SandwichBurger + Brownie with Ice Cream.png";
 import chocoFrappeSandwichBrownie from "../assets/Menu/Combos/Choco Frappe + SandwichBurger + Brownie.png";
-import mintMojitoMomo from "../assets/Menu/Combos/Mint Mojito + Schezwan Pan Fried Chicken Momo.png";
 import cappuccinoRedSaucePasta from "../assets/Menu/Combos/Cappuccino + Red Sauce Pasta.png";
 import klubnikaCoffeeGarlicBread from "../assets/Menu/Combos/Klubnika Coffee + Garlic Bread.png";
 import cappuccinoCCDCookies from "../assets/Menu/Combos/Cappuccino + CCD Cookies.png";
@@ -522,46 +514,10 @@ export const DISHES = [
       },
     ],
   },
-  // 5. Momo & Pasta
+  // 5. Pasta
   {
-    name: "Momo & Pasta",
+    name: "Pasta",
     items: [
-      {
-        image: paneerChilliMomo,
-        title: "Paneer Chilli Momo (5pcs)",
-        description: genDesc(),
-        price: "₹69",
-      },
-      {
-        image: friedPaneerChilliMomo,
-        title: "Fried Paneer Chilli Momo (5pcs)",
-        description: genDesc(),
-        price: "₹79",
-      },
-      {
-        image: schezwanPaneerMomo,
-        title: "Schezwan Pan Fried Paneer Chilli Momo",
-        description: genDesc(),
-        price: "₹99",
-      },
-      {
-        image: steamChickenMomo,
-        title: "Steam Chicken Momo (5pcs)",
-        description: genDesc(),
-        price: "₹65",
-      },
-      {
-        image: friedChickenMomo,
-        title: "Fried Chicken Momo (5pcs)",
-        description: genDesc(),
-        price: "₹79",
-      },
-      {
-        image: schezwanChickenMomo,
-        title: "Schezwan Pan Fried Chicken Momo",
-        description: genDesc(),
-        price: "₹99",
-      },
       {
         image: whiteSaucePastaVeg,
         title: "White Sauce Pasta Veg",
@@ -896,12 +852,6 @@ export const DISHES = [
         title: "Gulab Jamun with Ice Cream",
         description: genDesc(),
         price: "₹89",
-      },
-      {
-        image: freshFruitPunch,
-        title: "Fresh Fruit Punch",
-        description: genDesc(),
-        price: "₹109",
       },
       {
         image: nextImage(), // Klubnika Waffy - SKIPPED

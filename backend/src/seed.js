@@ -351,46 +351,10 @@ const DISHES = [
       },
     ],
   },
-  // 5. Momo & Pasta
+  // 5. Pasta
   {
-    name: "Momo & Pasta",
+    name: "Pasta",
     items: [
-      {
-        image: "assets/Menu/Momo & Pasta/Paneer Chilli Momo(5pcs).jpg",
-        title: "Paneer Chilli Momo (5pcs)",
-        description: "A delicious choice, freshly prepared for you.",
-        price: "₹69",
-      },
-      {
-        image: "assets/Menu/Momo & Pasta/Fried Paneer Chilli Momo(5pcs).jpg",
-        title: "Fried Paneer Chilli Momo (5pcs)",
-        description: "A delicious choice, freshly prepared for you.",
-        price: "₹79",
-      },
-      {
-        image: "assets/Menu/Momo & Pasta/Schezwan Pan Fried Paneer Chilli Momo.jpg",
-        title: "Schezwan Pan Fried Paneer Chilli Momo",
-        description: "A delicious choice, freshly prepared for you.",
-        price: "₹99",
-      },
-      {
-        image: "assets/Menu/Momo & Pasta/Steam Chicken Momo(5pcs).jpg",
-        title: "Steam Chicken Momo (5pcs)",
-        description: "A delicious choice, freshly prepared for you.",
-        price: "₹65",
-      },
-      {
-        image: "assets/Menu/Momo & Pasta/Fried Chicken Momo(5pcs).jpg",
-        title: "Fried Chicken Momo (5pcs)",
-        description: "A delicious choice, freshly prepared for you.",
-        price: "₹79",
-      },
-      {
-        image: "assets/Menu/Momo & Pasta/Schezwan Pan Fried Chicken Momo.jpg",
-        title: "Schezwan Pan Fried Chicken Momo",
-        description: "A delicious choice, freshly prepared for you.",
-        price: "₹99",
-      },
       {
         image: "assets/Menu/Momo & Pasta/White Sauce Pasta Veg.jpg",
         title: "White Sauce Pasta Veg",
@@ -721,12 +685,6 @@ const DISHES = [
         price: "₹77",
       },
       {
-        image: "assets/Menu/Desserts/Fresh Fruit Punch.jpg",
-        title: "Fresh Fruit Punch",
-        description: "A delicious choice, freshly prepared for you.",
-        price: "₹109",
-      },
-      {
         image: "assets/Menu/Desserts/Klubnika Waffy with Ice Cream.jpg",
         title: "Klubnika Waffy with Ice Cream",
         description: "A delicious choice, freshly prepared for you.",
@@ -751,12 +709,6 @@ const DISHES = [
         price: "₹179",
       },
       {
-        image: "assets/Menu/Combos/Mint Mojito + Schezwan Pan Fried Chicken Momo.png",
-        title: "Mint Mojito + Schezwan Pan Fried Chicken Momo",
-        description: "A delicious choice, freshly prepared for you.",
-        price: "₹149",
-      },
-      {
         image: "assets/Menu/Combos/Cappuccino + Red Sauce Pasta.png",
         title: "Cappuccino + Red Sauce Pasta",
         description: "A delicious choice, freshly prepared for you.",
@@ -769,14 +721,8 @@ const DISHES = [
         price: "₹79",
       },
       {
-        image: "assets/Menu/Combos/Cappuccino + CCD Cookies.png",
-        title: "Cappuccino + CCD Cookies",
-        description: "A delicious choice, freshly prepared for you.",
-        price: "₹90",
-      },
-      {
         image: "assets/Menu/Combos/Chicken Pizza + Mint Mojito.png",
-        title: "Chicken Pizza + Mint Mojito",
+        title: "Mint Mojito + Chicken Tikka Pizza",
         description: "A delicious choice, freshly prepared for you.",
         price: "₹215",
       },
