@@ -2,16 +2,16 @@
 
 // --- Import Images ---
 // Placeholders for fallback and combos
-import dish1 from "../../public/dish1.jpeg";
-import dish2 from "../../public/dish2.jpeg";
-import dish3 from "../../public/dish3.jpeg";
-import dish4 from "../../public/dish4.jpeg";
-import dish5 from "../../public/dish5.jpeg";
-import dish6 from "../../public/dish6.jpeg";
-import dish7 from "../../public/dish7.jpeg";
-import dish8 from "../../public/dish8.jpeg";
-import dish9 from "../../public/dish9.jpeg";
-import dish10 from "../../public/dish10.jpeg";
+const dish1 = "/dish1.jpeg";
+const dish2 = "/dish2.jpeg";
+const dish3 = "/dish3.jpeg";
+const dish4 = "/dish4.jpeg";
+const dish5 = "/dish5.jpeg";
+const dish6 = "/dish6.jpeg";
+const dish7 = "/dish7.jpeg";
+const dish8 = "/dish8.jpeg";
+const dish9 = "/dish9.jpeg";
+const dish10 = "/dish10.jpeg";
 
 // --- REMOVED: Old CUSINES placeholders ---
 // import italian from "../assets/italian.jpeg";
@@ -83,6 +83,7 @@ import mintMojito from "../assets/Menu/Refreshments/Mint Mojito.jpg";
 import sunrise from "../assets/Menu/Refreshments/Sunrise.jpg";
 import greenAppleFizz from "../assets/Menu/Refreshments/Green Apple Fizz.jpg";
 import litchi from "../assets/Menu/Refreshments/Litchi.jpg"; // For 'Glitchi'
+import spicyGuava from "../assets/Menu/Refreshments/Spicy Guava.png";
 
 // Sandwich & Burger
 import cheeseTomatoSandwich from "../assets/Menu/Sandwich & Burger/Sandwich/Cheese and Tomato Sandwich.webp";
@@ -591,7 +592,7 @@ export const DISHES = [
         price: "₹95",
       },
       {
-        image: nextImage(), 
+        image: spicyGuava, 
         title: "Spicy Guava",
         description: genDesc(),
         price: "₹89",

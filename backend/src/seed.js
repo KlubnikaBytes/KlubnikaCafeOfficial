@@ -427,6 +427,12 @@ const DISHES = [
         description: "A delicious choice, freshly prepared for you.",
         price: "₹95",
       },
+      {
+        image: "assets/Menu/Refreshments/Spicy Guava.png", 
+        title: "Spicy Guava",
+        description: "A delicious choice, freshly prepared for you.",
+        price: "₹89",
+      },
     ],
   },
   // 7. Sandwich & Burger
